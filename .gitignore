@@ -1,0 +1,7 @@
+
+sql/
+vendor/
+*.log
+*.ai
+*.db
+*.code-workspace
