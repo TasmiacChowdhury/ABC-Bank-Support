@@ -3,6 +3,11 @@
 
 ---
 # Changelog
+## Version 0.31 &nbsp;-&nbsp; (2020-04-14)
+* **`js\home.js`** : Removed testing related artifacts
+* **`css\home.css`** : Fixed precedence bug with `.input-solid` class and its derivatives
+* **`css\home.css`** : Fixed scaling on `textarea` elements
+
 ## Version 0.30 &nbsp;-&nbsp; (2020-04-14)
 * **`js\home.js`** : Added `modalNewTicket()` function as an interface for creating new tickets
 * **`js\home.js`** : Added `modalOpenTicket(...)` function as an interface for viewing existing tickets

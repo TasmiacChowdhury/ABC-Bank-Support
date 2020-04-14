@@ -61,7 +61,6 @@ window.addEventListener("DOMContentLoaded", async function() {
     Cmn.addListeners(eventListeners);
     IdxGlobals.container = document.getElementById("tickets");
     IdxGlobals.tickets = await getTickets();
-    console.log(IdxGlobals.tickets);
     if (!ticketsEmpty(IdxGlobals.tickets)) { createTickets(IdxGlobals.container, IdxGlobals.tickets); }
 });
 
@@ -133,7 +132,6 @@ function modalClose(del = false) {
 }
 
 function modalNewTicket() {
-    //event.preventDefault();
     var [modal, formSubject, formMessageText] = document.querySelectorAll("#nt-modal, #nt-f-subject, #nt-f-messageText");
 
     formSubject.value = "";

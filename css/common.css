@@ -317,16 +317,16 @@ input:placeholder-shown.invalid + label.lb-title:hover {
 
 textarea {
     margin: 0.2rem 0;
-    padding: 0.2em;
+    padding: 0.5em;
     border: 1px solid #000;
     font: inherit;
-    font-size: 0.9em;
+    font-size: 0.75em;
     font-weight: 400;
     background-color: #eee;
     resize: none;
 }
 
-.input-solid {
+.input-solid, .input-solid:placeholder-shown, .input-solid[type="text"], .input-solid[type="password"], .input-solid[type="email"] {
     margin-top: 0.2rem;
     border: 1px solid #000;
     background-color: #eee;
