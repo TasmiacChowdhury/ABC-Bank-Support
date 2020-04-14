@@ -31,6 +31,7 @@ try {
                     if (isset($_POST["remember-me"])) { setcookie("authToken", createToken($accountID, 30), time() + (86400 * 30), "/", ""); } // , TRUE, TRUE);   --removed for local testing without https
 
                     $_SESSION["acctype"] = getAccountType($accountID);
+                    $_SESSION["acctype"] == "c" ? $_SESSION["cid"] = getCustomerID($accountID) : $_SESSION["eid"] = getEmployeeID($accountID);
                     $_SESSION["accid"] = $accountID;
                     $_SESSION["username"] = $username;
 

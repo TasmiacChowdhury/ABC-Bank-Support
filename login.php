@@ -5,11 +5,11 @@
         exit;
     } else if (isset($_COOKIE["authToken"])) {
         include_once("php/restricted/db-functions.php");
-        $userID = validateToken($_COOKIE["authToken"]);
-        if ($userID === false) {
+        $accountID = validateToken($_COOKIE["authToken"]);
+        if ($accountID === false) {
             setcookie("authToken", "", 1);
         } else {
-            $_SESSION["uid"] = $userID;
+            $_SESSION["accid"] = $accountID;
             header("Location: /index.php");
             exit;
         }

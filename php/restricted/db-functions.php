@@ -16,6 +16,55 @@ function getAccountType($accountID) {
     return empty($result) ? false : $result[0]["AccountType"];
 }
 
+function getCustomerID($accountID) {
+    GLOBAL $conn;
+    $query = "SELECT      c.CustomerID
+              FROM        Customer AS c
+              WHERE       c.AccountID = :accountID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":accountID", $accountID);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return empty($result) ? false : $result[0]["CustomerID"];
+}
+
+function getEmployeeID($accountID) {
+    GLOBAL $conn;
+    $query = "SELECT      e.EmployeeID
+              FROM        Employee AS e
+              WHERE       e.AccountID = :accountID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":accountID", $accountID);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return empty($result) ? false : $result[0]["EmployeeID"];
+}
+
+function getFullName($accountID, $type) {
+    GLOBAL $conn;
+    if ($tpye == "customer") {
+        $query = "SELECT      c.FirstName, c.LastName
+                  FROM        Customer AS c
+                  WHERE       c.AccountID = :accountID;";
+    } else if ($type == "employee") {
+        $query = "SELECT      e.FirstName, e.LastName
+                  FROM        Employee AS e
+                  WHERE       e.AccountID = :accountID;";
+    } else {
+       logToFile("'Type' argument not supplied for function 'getFullName(\$accountID, \$type)'", "error");
+       return false;
+    }
+
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":accountID", $accountID);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return empty($result) ? false : $result[0]["FirstName"] . $result[0]["LastName"];
+}
+
 function getLoginInfo($username) {
     GLOBAL $conn;
     $query = "SELECT      a.AccountID, a.PasswordHash
@@ -190,6 +239,74 @@ function validateToken($token) {
     }
 
     return $result[0]["AccountID"];
+}
+
+/******************************* TICKETS *******************************/
+function getAllTickets($accountID) {
+    GLOBAL $conn;
+    $query = "SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
+              FROM        Ticket AS t
+              WHERE       t.AccountID = :accountID
+              ORDER BY    t.DateModified DESC;";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":accountID", $accountID);
+    $stmt->execute();
+    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!empty($tickets)) {
+        $query = "SELECT      t_m.TicketID, t_m.MessageSender, t_m.MessageText, t_m.MessageTime
+                  FROM        TicketMessage AS t_m
+                  WHERE       t_m.TicketID IN (
+                      SELECT      t.TicketID
+                      FROM        Ticket AS t
+                      WHERE       t.AccountID = :accountID
+                  )
+                  ORDER BY    t_m.TicketMessageID DESC;";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":accountID", $accountID);
+        $stmt->execute();
+        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($tickets as $idx => $t) {
+            $tickets[$idx]["Messages"] = array_filter($messages, function($var) use($t) { return ($var["TicketID"] == $t["TicketID"]); });
+        }
+    }
+
+    return empty($tickets) ? [] : $tickets;
+}
+
+function uploadTicket($accountID, $ticketSubject, $messageText, $dateCreated = null, $dateModified = null) {
+    GLOBAL $conn;
+    if (is_null($dateCreated)) { $dateCreated = date("Y-m-d H:i:s"); }
+    if (is_null($dateModified)) { $dateModified = date("Y-m-d H:i:s"); }
+
+    $conn->beginTransaction();
+
+    $query = "INSERT INTO Ticket (TicketSubject, DateCreated, DateModified, AccountID)
+                  VALUES (:ticketSubject, :dateCreated, :dateModified, :accountID);";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":ticketSubject", $ticketSubject);
+    $stmt->bindParam(":dateCreated", $dateCreated);
+    $stmt->bindParam(":dateModified", $dateModified);
+    $stmt->bindParam(":accountID", $accountID);
+    $stmt->execute();
+
+    $ticketID = $conn->lastInsertId();
+    $messageSender = getFullName($accountID, "customer");
+
+    $query = "INSERT INTO TicketMessage (MessageSender, MessageText, MessageTime, TicketID)
+                  VALUES (:messageSender, :messageText, :dateCreated, :ticketID);";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":messageSender", $messageSender);
+    $stmt->bindParam(":messageText", $messageText);
+    $stmt->bindParam(":dateCreated", $dateCreated);
+    $stmt->bindParam(":ticketID", $ticketID);
+    $query->execute();
+
+    $conn->commit();
+
+    return $ticketID;
 }
 
 ?>

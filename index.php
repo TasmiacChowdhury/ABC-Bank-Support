@@ -3,13 +3,13 @@
     if (!isset($_SESSION["accid"])) {
         if (isset($_COOKIE["authToken"])) {
             include_once("php/restricted/db-functions.php");
-            $userID = validateToken($_COOKIE["authToken"]);
-            if ($userID === false) {
+            $accountID = validateToken($_COOKIE["authToken"]);
+            if ($accountID === false) {
                 setcookie("authToken", "", 1);
                 header("Location: /login.php");
                 exit;
             } else {
-                $_SESSION["uid"] = $userID;
+                $_SESSION["accid"] = $accountID;
             }
         } else {
             header("Location: /login.php");
@@ -31,6 +31,7 @@
 	</head>
 	<body>
         <nav id="navbar">
+            <div class="nav-btn" id="create-ticket"></div>
             <div class="nav-menu">
                 <div class="nav-btn" id="sidemenu" data-menu="sidemenu-content"></div>
                 <div class="hidden" id="sidemenu-content">
@@ -39,6 +40,49 @@
                 </div>
             </div>
         </nav>
+        <div id="t-cntr">
+            <div id="t-headers" class="row">
+                <span id="h-subject" class="t-subject">Subject</span>
+                <span id="h-id" class="t-id">Ticket ID</span>
+                <span id="h-created" class="t-date">Created</span>
+                <span id="h-updated" class="t-date">Last Updated</span>
+                <span id="h-status" class="t-status">Status</span>
+            </div>
+            <div id="tickets"></div>
+        </div>
+        <div class="modal-container hidden" id="t-modal" data-modal="t-modal" data-listener="modalClose">
+            <div class="modal-content pad-ctn-2">
+                <span class="close" id="close-t-modal" data-modal="t-modal" data-listener="modalClose">&times;</span>
+                <div id="t-messages"></div>
+            </div>
+        </div>
+        <div class="modal-container hidden" id="nt-modal" data-modal="nt-modal" data-listener="modalClose">
+            <div class="modal-content pad-ctn-2">
+                <span class="close" id="close-t-modal" data-modal="nt-modal" data-listener="modalClose">&times;</span>
+                <form id="nt-f" enctype="multipart/form-data">
+                    <div class="form-group no-rev">
+                        <label for="nt-f-subject" class="lb-title">Subject</label>
+                        <input type="text" name="subject" id="nt-f-subject" class="input-solid" placeholder="Enter Subject" data-listener="errorCheck" required>
+                        <label class="error-label invisible" id="nt-f-subject-error">Error</label>
+                    </div>
+                    <div class="form-group no-rev">
+                        <label for="nt-f-messageText" class="lb-title">Message</label>
+                        <textarea name="messageText" id="nt-f-messageText" placeholder="Enter your message here..." maxlength="65535" required></textarea>
+                        <label class="error-label invisible" id="nt-f-messageText-error">Error</label>
+                    </div>
+                    <div class="row between">
+                        <label for="file-upload" class="file-input-group">
+                            <span class="file-input-name hidden" id="nt-file-name"></span>
+                            <span class="file-input-btn"><img src="images/Upload.png" class="file-input-icon"></span>
+                        </label>
+                        <input type="file" class="file-input" name="files" id="file-upload" accept="image/png, image/jpeg, application/pdf" multiple>
+                        <span class="file-input-btn del" id="remove-upload"><img src="images/Delete.png" class="file-input-icon"></span>
+                        <input type="hidden" name="removeFiles" id="nt-f-remove" value="false">
+                    </div>
+                    <button type="submit" class="btn-hollow submit" id="nt-submit">SUBMIT</button>
+                </form>
+            </div>
+        </div>
         <div class="modal-container hidden" id="acc-modal" data-modal="acc-modal" data-listener="modalClose">
             <div class="modal-content acc-modal">
                 <span class="close" id="close-acc-modal" data-modal="acc-modal" data-listener="modalClose">&times;</span>

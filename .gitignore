@@ -1,6 +1,6 @@
 
-sql/
 vendor/
+*/unused/
 *.log
 *.ai
 *.db

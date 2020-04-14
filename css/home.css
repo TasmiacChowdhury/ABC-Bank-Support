@@ -31,8 +31,23 @@ nav {
     transition: 0.1s all ease-in-out;
 }
 
-.nav-btn:hover {
+.nav-btn:hover, #create-ticket:hover::before {
     color: #fff;
+}
+
+#create-ticket {
+    margin: 0 auto 0 1rem;
+}
+
+#create-ticket::before {
+    content: "+";
+    margin: 0 0.4rem;
+    font-size: 1.4em;
+}
+
+#create-ticket::after {
+    content: "Create";
+    text-transform: uppercase;
 }
 
 #sidemenu {
@@ -146,6 +161,184 @@ span.close:hover {
     color: #fff;
 }
 
+/********************* TICKETS *********************/
+#t-cntr {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 0.5rem;
+}
+
+#t-headers {
+    color: #333;
+    border-bottom: 2px solid var(--grey-dark);
+}
+
+#tickets {
+    color: #111;
+}
+
+.t-subject {
+    width: 37.5%;
+}
+
+.t-id, .t-date {
+    width: 17.5%;
+}
+
+.t-status {
+    width: 10%;
+}
+
+.t-subject, .t-id, .t-date, .t-status {
+    padding: 0.5em;
+    margin: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.t-status:not(#h-status) {
+    margin: 0.25em;
+    padding: 0.25em;
+    border-radius: 3px;
+    color: #fff;
+    background-color: var(--grey-dark);
+    text-align: center;
+}
+
+.t-status.open:not(#h-status) {
+    background-color: var(--green-light);
+}
+
+.ticket {
+    align-items: center;
+    cursor: pointer;
+}
+
+.ticket:not(:last-of-type) {
+    border-bottom: 1px solid var(--grey-med);
+}
+
+.ticket:hover {
+    background-color: rgba(240, 240, 240, 0.8);
+}
+
+#t-modal-content {
+    align-items: flex-start;
+}
+
+.message {
+    padding: 0.5em 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.message-subject {
+    margin: 0;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--grey-med);
+}
+
+.message:not(:last-of-type) {
+    border-bottom: 1px dashed var(--grey-med);
+}
+
+.message-text {
+    white-space: pre-wrap;
+}
+
+/********************* FORM *********************/
+#nt-f-messageText {
+    min-width: 20em;
+    min-height: 10em;
+}
+
+.file-input-group {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    padding: 0;
+    width: fit-content;
+    max-width: 100%;
+	background: none;
+	cursor: pointer;
+}
+
+.file-input {
+	overflow: hidden;
+	position: absolute;
+	width: 1px !important;
+	height: 1px;
+	opacity: 0;
+	z-index: -1;
+}
+
+.file-input-btn, .file-input-name {
+	padding: 5px 8px 10px 8px;
+	height: 16px;
+}
+
+.file-input-btn {
+    display: inline-block;
+    font-size: 1em;
+    border: 2px solid #000;
+	background: none;
+    color: #000;
+    white-space: nowrap;
+    transition: 0.2s all;
+}
+
+.file-input-btn::after {
+    content: "Upload";
+}
+
+.file-input-btn.del::after {
+    content: "Remove";
+}
+
+.file-input-name {
+	display: inline-block;
+    max-width: 280px;
+	vertical-align: top;
+	text-align: center;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #000;
+    border: 2px solid var(--blue-light);
+    border-left: none;
+    border-radius: 0 3px 3px 0;
+	overflow: hidden;
+}
+
+.file-input-btn:hover, .file-input-name:not(.hidden) + .file-input-btn {
+    color: #fff;
+    background-color: var(--blue-light);
+    border-color: var(--blue-light);
+    border-radius: 3px;
+}
+
+.file-input-btn.del {
+    cursor: pointer;
+}
+
+.file-input-btn.del:hover {
+    background-color: var(--red-med);
+    border-color: var(--red-med);
+}
+
+.file-input-icon {
+	margin: -4px 4px 0 0;
+    vertical-align: middle;
+    transition: 0.2s all;
+}
+
+.file-input-name:not(.hidden) + .file-input-btn {
+    border-radius: 3px 0 0 3px;
+}
+
+.file-input-name:not(.hidden) + .file-input-btn > .file-input-icon, .file-input-btn:hover > .file-input-icon {
+    filter: invert(1);
+}
+
 /********************* ACCOUNT *********************/
 .acc-modal {
     flex-flow: row;
@@ -193,13 +386,17 @@ span.close:hover {
 }
 
 /********************* MOBILE *********************/
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 750px) {
     .modal-content {
         max-width: 485px;
     }
+
+    #create-ticket::after, #sidemenu::before {
+        content: "";
+    }
 }
 
-@media screen and (max-width: 500px), screen and (max-height: 500px) {
+@media screen and (max-width: 550px), screen and (max-height: 500px) {
     .modal-content {
         max-width: 98vw;
         overflow: auto;

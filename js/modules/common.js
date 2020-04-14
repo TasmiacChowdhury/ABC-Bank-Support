@@ -1,4 +1,5 @@
-var CmnGlobals = {
+const CmnGlobals = {
+    months: ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     toasts: []
 }
 
@@ -6,6 +7,19 @@ var CmnGlobals = {
 export function getRandomInt(min, max, cur) {
     var num = Math.floor(Math.random() * (max - min + 1)) + min;
     return (num === cur) ? getRandomInt(min, max, cur) : num;
+}
+
+export function printDate(dateTime, type = "date") {
+    let [year, month, day, time] = [dateTime.substring(0, 4), dateTime.substring(5, 7), dateTime.substring(8, 10), dateTime.substring(11)];
+    switch (type) {
+        case "date": return `${CmnGlobals.months[+month]}. ${day}, ${year}`;
+        case "dateTime": return `${CmnGlobals.months[+month]}. ${day}, ${year} | ${new Date(`1970-01-01T${time}`).toLocaleTimeString({}, {hour: "numeric", minute: "numeric"})}`;
+        case "time": return new Date(`1970-01-01T${time}`).toLocaleTimeString({}, {hour: "numeric", minute: "numeric"});
+    }
+}
+
+export function leadZeros(num, places) {
+    return String(num).padStart(places, "0");
 }
 
 export function debounce(fn, delay) {
@@ -96,12 +110,15 @@ export function insertInlineMessage(position, refNode, text, options = [{"type":
 export function isValid(element) {
     var validity = {"Valid": false, "Message": ""};
     switch (element.name) {
-        case "title": case "email": case "username": case "password": case "password-confirm":
+        case "subject": case "email": case "username": case "password": case "password-confirm":
             if (!element.value) { validity.Message = "Field is required"; return validity; }
     }
     switch (element.name) {
-        case "title":
+        case "subject":
             if (element.value.length > 255) { validity.Message = "Title cannot be more than 255 characters"; return validity; }
+            break;
+        case "messageText":
+            if (element.value.length > 65535) { validity.Message = "Message cannot be more than 65,535 characters"; return validity; }
             break;
         case "email":
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

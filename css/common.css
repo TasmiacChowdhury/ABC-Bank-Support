@@ -1,13 +1,16 @@
 /********************* VARIABLES *********************/
 :root {
     --theme-color: var(--blue-light);
-    --theme-image-panel: url("../images/panel-white-mountain.jpg");
-    --theme-image-wrapper: url("../images/purple-mountain.jpg");
+    --theme-image-panel: url("../images/panel-debit-card.jpg");
+    --theme-image-wrapper: url("../images/buildings.jpg");
     --black-med: rgb(30, 30, 30);
     --blue-med: rgb(20, 90, 170);
     --blue-light: rgb(0, 115, 190);
     --green-light: rgb(70, 190, 70);
-    --green-med: rgb(10, 130, 10);;
+    --green-med: rgb(10, 130, 10);
+    --grey-light: rgb(200, 200, 200);
+    --grey-med: #999;
+    --grey-dark: #666;
     --orange-light: rgb(210, 130, 0);
     --orange-med: rgb(200, 110, 0);
     --orange-dark: rgb(200, 75, 0);
@@ -76,8 +79,8 @@ html, body {
     min-height: 100vh;
 	font-family: "Roboto", Arial, Helvetica, sans-serif;
 	font-size: 18px;
-	font-weight: 600;
-    background-color: rgb(200, 200, 200);
+	font-weight: 500;
+    background-color: #fff;
     transition: all 0.2s ease-in-out;
 }
 
@@ -90,7 +93,7 @@ h4, h5, h6 {
 }
 
 p, span {
-	color: var(--white-light);
+	color: #000;
 }
 
 p {
@@ -310,6 +313,23 @@ input:placeholder-shown.invalid + label.lb-title, input:not(:placeholder-shown).
 
 input:placeholder-shown.invalid + label.lb-title:hover {
     color: var(--red-dark);
+}
+
+textarea {
+    margin: 0.2rem 0;
+    padding: 0.2em;
+    border: 1px solid #000;
+    font: inherit;
+    font-size: 0.9em;
+    font-weight: 400;
+    background-color: #eee;
+    resize: none;
+}
+
+.input-solid {
+    margin-top: 0.2rem;
+    border: 1px solid #000;
+    background-color: #eee;
 }
 
 .form-group {
@@ -546,12 +566,18 @@ button.close:hover {
 }
 
 /********************* MOBILE *********************/
-@media screen and (max-width: 500px), screen and (max-height: 500px) {
+@media screen and (max-width: 750px), screen and (max-height: 500px) {
     body {
         font-size: 16px;
     }
 
     .pad-ctn-2, .pad-ctn-3 {
         padding: 1em;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    body {
+        font-size: 14px;
     }
 }
