@@ -3,23 +3,28 @@
 
 ---
 # Changelog
+## Version 0.32 &nbsp;-&nbsp; (2020-04-14)
+* **`php\create-ticket.php`** : Fixed bugs caused by incomplete / malformed returned ticket information
+* **`php\restricted\db-functions.php`** : Fixed typo of variable name and returned string in `getFullName(...)`
+* **`php\restricted\db-functions.php`** : Fixed typo with PDO causing fatal error on query execution in `getLoginInfo(...)`
+
 ## Version 0.31 &nbsp;-&nbsp; (2020-04-14)
 * **`js\home.js`** : Removed testing related artifacts
 * **`css\home.css`** : Fixed precedence bug with `.input-solid` class and its derivatives
 * **`css\home.css`** : Fixed scaling on `textarea` elements
 
 ## Version 0.30 &nbsp;-&nbsp; (2020-04-14)
-* **`js\home.js`** : Added `modalNewTicket()` function as an interface for creating new tickets
-* **`js\home.js`** : Added `modalOpenTicket(...)` function as an interface for viewing existing tickets
-* **`js\home.js`** : Added `createTickets(...)` function to populate Tickets table with existing tickets
-* **`js\home.js`** : Added `createTicket(...)` function to support creation of individual ticket elements in `createTickets(...)`
-* **`js\home.js`** : Added `createTicketMessage(...)` function to support creation of individual message components of tickets in `modalOpenTicket(...)`
-* **`js\home.js`** : Added `getTickets()` function to support `createTickets(...)`
-* **`js\home.js`** : Added `ticketsEmpty(...)` function to check if the global `IdxGlobals.tickets` attribute is empty for miscellaneous support functions
-* **`js\home.js`** : Added `uploadTicket()` function to upload new tickets and create the elements for them in the Tickets table
-* **`js\common.js`** : Added `printDate(...)` function for pretty-printing SQL DateTime strings
-* **`js\common.js`** : Added `leadZeros(...)` function to maintain a consistent formatting for ticket IDs in the Tickets table
-* **`js\common.js`** : Updated `isValid(...)` function to support new `messageText` element and correct artifacts from migration of existing files
+* **`js\home.js`** : Added `modalNewTicket()` as an interface for creating new tickets
+* **`js\home.js`** : Added `modalOpenTicket(...)` as an interface for viewing existing tickets
+* **`js\home.js`** : Added `createTickets(...)` to populate Tickets table with existing tickets
+* **`js\home.js`** : Added `createTicket(...)` to support creation of individual ticket elements in `createTickets(...)`
+* **`js\home.js`** : Added `createTicketMessage(...)` to support creation of individual message components of tickets in `modalOpenTicket(...)`
+* **`js\home.js`** : Added `getTickets()` to support `createTickets(...)`
+* **`js\home.js`** : Added `ticketsEmpty(...)` to check if the global `IdxGlobals.tickets` attribute is empty for miscellaneous support functions
+* **`js\home.js`** : Added `uploadTicket()` to upload new tickets and create the elements for them in the Tickets table
+* **`js\common.js`** : Added `printDate(...)` for pretty-printing SQL DateTime strings
+* **`js\common.js`** : Added `leadZeros(...)` to maintain a consistent formatting for ticket IDs in the Tickets table
+* **`js\common.js`** : Updated `isValid(...)` to support new `messageText` element and correct artifacts from migration of existing files
 * **`php\login.php`** : Updated successful login to create either `cid` or `eid` session variable for reference to CustomerID and EmployeeID, respectively, depending on the `acctype` session variable
 * **`php\restricted\db-functions.php`** : Added `getCustomerID(...)`, `getEmployeeID(...)`, `getFullName(...)`, `getAllTickets(...)`, and `uploadTicket(...)` functions
 * **`.gitignore`**: Removed `sql/` entry to reveal database setup file and queries used in `php\db-functions.php`

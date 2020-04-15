@@ -44,7 +44,7 @@ function getEmployeeID($accountID) {
 
 function getFullName($accountID, $type) {
     GLOBAL $conn;
-    if ($tpye == "customer") {
+    if ($type == "customer") {
         $query = "SELECT      c.FirstName, c.LastName
                   FROM        Customer AS c
                   WHERE       c.AccountID = :accountID;";
@@ -62,7 +62,7 @@ function getFullName($accountID, $type) {
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    return empty($result) ? false : $result[0]["FirstName"] . $result[0]["LastName"];
+    return empty($result) ? false : $result[0]["FirstName"] . " " . $result[0]["LastName"];
 }
 
 function getLoginInfo($username) {
@@ -302,7 +302,7 @@ function uploadTicket($accountID, $ticketSubject, $messageText, $dateCreated = n
     $stmt->bindParam(":messageText", $messageText);
     $stmt->bindParam(":dateCreated", $dateCreated);
     $stmt->bindParam(":ticketID", $ticketID);
-    $query->execute();
+    $stmt->execute();
 
     $conn->commit();
 

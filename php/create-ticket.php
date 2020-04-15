@@ -18,7 +18,8 @@ try {
             $date = date("Y-m-d H:i:s");
             $ticketID = uploadTicket($accountID, $subject, $messageText, $date, $date);
 
-            echo json_encode(["Success" => true, "Ticket" => ["TicketID" => $ticketID, "Subject" => $subject, "MessageText" => $messageText, "DateCreated" => $date, "DateModified" => $date]]);
+            echo json_encode(["Success" => true, "Ticket" => ["TicketID" => $ticketID, "TicketSubject" => $subject, "DateCreated" => $date, "DateModified" => $date,
+                "TicketStatus" => "Open", "Messages" => [["MessageSender" => getFullName($accountID, "customer"), "MessageTime" => $date, "MessageText" => $messageText]]]]);
         }
     } else {
         echo json_encode(["Success" => false, "Message" => "User not signed in"]);
