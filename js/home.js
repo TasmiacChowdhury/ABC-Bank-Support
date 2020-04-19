@@ -22,6 +22,22 @@ const eventListeners = [
         "eventType": "submit",
         "function": uploadTicket
     }, {
+        "id": "paginator-left",
+        "eventType": "click",
+        "function": function() {
+            if (this.classList.contains("disabled")) { return false; }
+            loadPage(Idx.curPage - 1);
+            paginate(Idx.curPage - 1);
+        }
+    }, {
+        "id": "paginator-right",
+        "eventType": "click",
+        "function": function() {
+            if (this.classList.contains("disabled")) { return false; }
+            loadPage(Idx.curPage + 1);
+            paginate(Idx.curPage + 1);
+        }
+    }, {
         "id": "sidemenu",
         "eventType": "click",
         "function": toggleMenu
@@ -29,10 +45,10 @@ const eventListeners = [
         "dataListener": "acc-btn",
         "eventType": "click",
         "function": function(event) {
-            Cmn.switchPanel(IdxGlobals.accCurPanel, event.target.dataset.panel);
-            IdxGlobals.accCurPanel = event.target.dataset.panel;
-            Cmn.switchTab(IdxGlobals.accCurTab, event.target.id);
-            IdxGlobals.accCurTab = event.target.id;
+            Cmn.switchPanel(Idx.accCurPanel, event.target.dataset.panel);
+            Idx.accCurPanel = event.target.dataset.panel;
+            Cmn.switchTab(Idx.accCurTab, event.target.id);
+            Idx.accCurTab = event.target.id;
         }
     }, {
         "dataListener": "errorCheck",
@@ -43,33 +59,54 @@ const eventListeners = [
         "eventType": "mousedown",
         "function": () => modalClose()
     }, {
+        "dataListener": "paginate",
+        "eventType": "click",
+        "function": function() {
+            loadPage(this.dataset.page);
+            paginate(this.dataset.page);
+        }
+    }, {
         "domObject": document,
         "eventType": "click",
         "function": closeMenus
     }
 ];
 
-const IdxGlobals = {
+const Idx = {
     accCurTab: "acc-tab-info",
     accCurPanel: "acc-panel-info",
-    container: "",
+    curPage: 1,
     openMenus: [],
-    tickets: []
+    pagesContainer: "",
+    pageLeft: "",
+    pageRight: "",
+    tickets: [],
+    ticketsContainer: "",
+    ticketsPerPage: 10,
+    totalPages: 1
 }
 
 window.addEventListener("DOMContentLoaded", async function() {
+    Idx.tickets = await getTickets();
+    Idx.ticketsContainer = document.getElementById("tickets");
+    Idx.pagesContainer = document.getElementById("pages");
+    Idx.pageLeft = document.getElementById("paginator-left");
+    Idx.pageRight = document.getElementById("paginator-right");
+
+    if (!ticketsEmpty(Idx.tickets)) {
+        Idx.totalPages = Math.ceil(Idx.tickets.length / Idx.ticketsPerPage);
+        initializePagination();
+    }
+
     Cmn.addListeners(eventListeners);
-    IdxGlobals.container = document.getElementById("tickets");
-    IdxGlobals.tickets = await getTickets();
-    if (!ticketsEmpty(IdxGlobals.tickets)) { createTickets(IdxGlobals.container, IdxGlobals.tickets); }
 });
 
 /******************************* GENERAL *******************************/
 function closeMenus() {
-    if (IdxGlobals.openMenus.length > 0) {
-        IdxGlobals.openMenus.forEach(e => {
+    if (Idx.openMenus.length > 0) {
+        Idx.openMenus.forEach(e => {
             e.classList.toggle("hidden");
-            IdxGlobals.openMenus.shift();
+            Idx.openMenus.shift();
         });
     }
 }
@@ -78,10 +115,10 @@ function toggleMenu() {
     event.stopPropagation();
     var ele = this || event.target,
         menu = document.getElementById(ele.dataset.menu);
-    if (!IdxGlobals.openMenus.includes(menu)) {
+    if (!Idx.openMenus.includes(menu)) {
         closeMenus();
         menu.classList.toggle("hidden");
-        IdxGlobals.openMenus.push(menu);
+        Idx.openMenus.push(menu);
     } else { closeMenus(); }
 }
 
@@ -142,14 +179,14 @@ function modalNewTicket() {
 }
 
 function modalOpenTicket(ticket) {
-    var [modal, cntr] = document.querySelectorAll("#t-modal, #t-messages"),
+    var [modal, container] = document.querySelectorAll("#t-modal, #t-messages"),
         docFrag = document.createDocumentFragment();
 
     Object.keys(ticket.Messages).forEach(i => docFrag.appendChild(createTicketMessage(ticket.Messages[i])));
 
-    cntr.innerHTML = "";
-    cntr.insertAdjacentHTML("afterbegin", `<h2 class="message-subject">${ticket.TicketSubject}</h2>`);
-    cntr.appendChild(docFrag);
+    container.innerHTML = "";
+    container.insertAdjacentHTML("afterbegin", `<h2 class="message-subject">${ticket.TicketSubject}</h2>`);
+    container.appendChild(docFrag);
 
     closeMenus();
     modal.classList.remove("hidden");
@@ -179,10 +216,10 @@ function createTicket(ticket) {
 	return frag;
 }
 
-function createTickets(ctnr, tickets) {
+function createTickets(container, tickets) {
     var	docFrag = document.createDocumentFragment();
     tickets.forEach(ticket => docFrag.appendChild(createTicket(ticket)));
-    ctnr.appendChild(docFrag);
+    container.appendChild(docFrag);
 }
 
 async function getTickets() {
@@ -193,10 +230,10 @@ async function getTickets() {
 
 function ticketsEmpty(tickets) {
     if (tickets.length < 1) {
-        IdxGlobals.container.classList.add("empty");
+        Idx.ticketsContainer.classList.add("empty");
         return true;
     } else {
-        IdxGlobals.container.classList.remove("empty");
+        Idx.ticketsContainer.classList.remove("empty");
         return false;
     }
 }
@@ -208,11 +245,63 @@ async function uploadTicket() {
     var formData = new FormData(this),
         response = await (await fetch("/php/create-ticket.php", {method: "POST", body: formData})).json();
     if (response.Success) {
-        if (IdxGlobals.tickets.length < 1) { IdxGlobals.container.classList.remove("empty"); }
-        IdxGlobals.tickets.push(response.Ticket);
-        IdxGlobals.container.prepend(createTicket(response.Ticket));
+        if (Idx.tickets.length < 1) { Idx.ticketsContainer.classList.remove("empty"); }
+        Idx.tickets.push(response.Ticket);
+        Idx.ticketsContainer.prepend(createTicket(response.Ticket));
         Cmn.toast("Ticket created", "success");
     } else {
         Cmn.toast(response.Message, "error");
     }
+}
+
+/******************************* PAGINATION *******************************/
+function emptyContainer(container) {
+    while (container.firstChild) { container.removeChild(container.firstChild); }
+}
+
+function initializePagination() {
+    for (let i = 1; i < Math.min(Idx.totalPages, 5) + 1; i++) {
+        Idx.pagesContainer.insertAdjacentHTML("beforeend", `<span class="page-num" data-page=${i} data-listener="paginate">${i}</span>`);
+    }
+    Idx.pagesContainer.firstChild.classList.add("active");
+    loadPage(Idx.curPage);
+}
+
+function loadPage(page) {
+    var end =  page * Idx.ticketsPerPage,
+        start = end - Idx.ticketsPerPage,
+        displayedTickets = Idx.tickets.slice(start, end);
+    emptyContainer(Idx.ticketsContainer);
+    createTickets(Idx.ticketsContainer, displayedTickets);
+}
+
+function paginate(page) {
+    page = +page;
+    if (page == Idx.curPage) { return false; }
+    else if (page < 1) { page = 1; }
+    else if (page > Idx.totalPages) { page = Idx.totalPages; }
+
+    let pages = [...Idx.pagesContainer.childNodes],
+        startPage = page < 4 ? 1 : page - 2,
+        endPage = startPage + 4;
+    if (endPage > Idx.totalPages) {
+        endPage = Idx.totalPages;
+        startPage = endPage - 4 > 0 ? endPage - 4 : 1;
+    }
+
+    let pageNums = Array.from({length: endPage + 1 - startPage}, (_, i) => i + startPage);
+    pages.forEach((p, i) => {
+        p.dataset.page = pageNums[i];
+        p.innerHTML = p.dataset.page;
+    });
+
+    let active = document.querySelector(".page-num.active"),
+        leftClasses = Idx.pageLeft.classList,
+        rightClasses = Idx.pageRight.classList;
+    if (active) { active.classList.remove("active"); }
+    pages[pages.findIndex(e => e.dataset.page == page)].classList.add("active");
+    page > 1 ? leftClasses.remove("disabled") : leftClasses.add("disabled");
+    page < Idx.totalPages ? rightClasses.remove("disabled") : rightClasses.add("disabled");
+
+    Idx.curPage = page;
 }

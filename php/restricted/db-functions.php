@@ -242,17 +242,17 @@ function validateToken($token) {
 }
 
 /******************************* TICKETS *******************************/
-function getAllTickets($accountID) {
+function getAccountTickets($accountID) {
     GLOBAL $conn;
     $query = "SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
               FROM        Ticket AS t
               WHERE       t.AccountID = :accountID
               ORDER BY    t.DateModified DESC;";
-
     $stmt = $conn->prepare($query);
     $stmt->bindParam(":accountID", $accountID);
     $stmt->execute();
     $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
     if (!empty($tickets)) {
         $query = "SELECT      t_m.TicketID, t_m.MessageSender, t_m.MessageText, t_m.MessageTime
@@ -262,6 +262,39 @@ function getAllTickets($accountID) {
                       FROM        Ticket AS t
                       WHERE       t.AccountID = :accountID
                   )
+                  ORDER BY    t_m.TicketMessageID DESC;";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":accountID", $accountID);
+        $stmt->execute();
+        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($tickets as $idx => $t) {
+            $tickets[$idx]["Messages"] = array_filter($messages, function($var) use($t) { return ($var["TicketID"] == $t["TicketID"]); });
+        }
+    }
+
+    return empty($tickets) ? [] : $tickets;
+}
+
+function getAllTickets() {
+    GLOBAL $conn;
+    $query = "SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
+              FROM        Ticket AS t
+              ORDER BY    t.DateModified DESC
+              LIMIT       500;";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!empty($tickets)) {
+        $query = "SELECT      t_m.TicketID, t_m.MessageSender, t_m.MessageText, t_m.MessageTime
+                  FROM        TicketMessage AS t_m INNER JOIN (
+                                  SELECT      t.TicketID
+                                  FROM        Ticket AS t
+                                  ORDER BY    t.DateModified DESC
+                                  LIMIT       500
+                              ) AS t
+                                  ON t_m.TicketID = t.TicketID
                   ORDER BY    t_m.TicketMessageID DESC;";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(":accountID", $accountID);

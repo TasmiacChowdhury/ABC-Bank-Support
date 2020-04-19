@@ -3,6 +3,19 @@
 
 ---
 # Changelog
+## Version 0.40 &nbsp;-&nbsp; (2020-04-18)
+* **`index.php`** : Added markup for pagination
+* **`css\home.css`** : Added selectors for pagination
+* **`js\home.js`** : Added `emptyContainer(...)`, `initiliazePagination()`, `loadPage(...)`, `paginate(...)`, and related event listeners and global variables to support pagination
+* **`js\home.js`** : Updated various variable names to make them more self-explanatory or shorter where applicable
+* **`php\get-tickets.php`** : Updated module to support differentiation between Customers and Employees
+* **`php\db-functions.php`** : Changed `getAllTickets(...)` to `getAccountTickets(...)` and added a new `getAlltickets()` that more appropriately matches the naming scheme
+    * `getAccountTickets(...)` retains the same functionality of retrieving all tickets for a specific account, which is used in populating a customer's ticket table
+    * The new `getAllTickets()` is used to get the 500 most recently modified tickets from all users for the purpose of populating the employee ticket queue
+* **`sql\queries.sql`** : Added guidelines for how employee accounts are manually created
+* **`sql\queries.sql`** : Updated `register(...)` query to include the `DateCreated` attribute in the `Account` table instead of the `Customer` table
+* **`sql\queries.sql`** : Updated `getAccountTickets(...)` and `getAllTickets()` queries to coincide with aforementioned changes in `php\db-functions.php`
+
 ## Version 0.32 &nbsp;-&nbsp; (2020-04-14)
 * **`php\create-ticket.php`** : Fixed bugs caused by incomplete / malformed returned ticket information
 * **`php\restricted\db-functions.php`** : Fixed typo of variable name and returned string in `getFullName(...)`

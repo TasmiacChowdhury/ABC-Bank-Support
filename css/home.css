@@ -131,7 +131,7 @@ nav {
     margin: 1em auto;
     background-color: #fff;
     border: 3px solid;
-    border-image: linear-gradient(135deg, var(--blue-light) 0%, rgb(90, 15, 90) 100%) 1;
+    border-image: linear-gradient(135deg, var(--blue-light-2) 0%, rgb(90, 15, 90) 100%) 1;
     box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.6);
 	animation: animateZoom 0.6s;
 }
@@ -303,7 +303,7 @@ span.close:hover {
 	text-overflow: ellipsis;
     white-space: nowrap;
     color: #000;
-    border: 2px solid var(--blue-light);
+    border: 2px solid var(--blue-light-2);
     border-left: none;
     border-radius: 0 3px 3px 0;
 	overflow: hidden;
@@ -311,8 +311,8 @@ span.close:hover {
 
 .file-input-btn:hover, .file-input-name:not(.hidden) + .file-input-btn {
     color: #fff;
-    background-color: var(--blue-light);
-    border-color: var(--blue-light);
+    background-color: var(--blue-light-2);
+    border-color: var(--blue-light-2);
     border-radius: 3px;
 }
 
@@ -366,7 +366,7 @@ span.close:hover {
 }
 
 .acc-btn:hover {
-    background-color: var(--blue-light);
+    background-color: var(--blue-light-2);
 }
 
 .acc-btn.active {
@@ -383,6 +383,36 @@ span.close:hover {
     margin: 0.3rem 0;
     font-weight: 400;
     color: #000;
+}
+
+/********************* PAGINATION *********************/
+#pagination {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem auto;
+}
+
+#pages {
+    display: flex;
+}
+
+.page-arrow, .page-num {
+    margin: 0 0.2em;
+    padding: 0.3em 0.6em;
+    color: #fff;
+    background-color: var(--blue-light-2);
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.page-arrow.disabled {
+    filter: contrast(0.6);
+    cursor: not-allowed;
+}
+
+.page-num.active {
+    background-color: var(--blue-light-1);
 }
 
 /********************* MOBILE *********************/

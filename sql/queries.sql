@@ -1,3 +1,19 @@
+/******************************* REGISTER EMPLOYEES *******************************/
+/*  • PasswordHash should be generated using any updated PHP password-hashing tool using
+    the PASSWORD_DEFAULT (currently equivalent to PASSWORD_BCRYPT in PHP 7.2) algorithim
+    • Database management GUI, such as HeidiSQL or MySQLWorkbench, should be used to make
+    this process simpler in terms of getting the AccountID and entering values. The queries
+    below are only for reference purposes of what values need to be entered
+    • The EmployeeID is not an AUTO_INCREMENT field as it is the same ID used in the bank's
+    main database (for the reasons of having all of the employee information stored there
+    already and not duplicating it here needlessly). Therefore, it needs to be manually entered
+*/
+INSERT INTO Account (Username, PasswordHash, DateCreated)
+    VALUES (:username, :passwordHash, NOW());
+
+INSERT INTO Employee (EmployeeID, FirstName, LastName, AccountID)
+    VALUES (:employeeID, :firstName, :lastName, :accountID);
+
 /******************************* USERS / ACCOUNTS *******************************/
 /* getAccountType($accountID) */
 SELECT      a.AccountType
@@ -51,11 +67,11 @@ FROM        Account AS a INNER JOIN Employee AS e
 WHERE       e.AccountID = :accountID;
 
 /* register($email, $username, $password) */
-INSERT INTO Account (Username, PasswordHash)
-    VALUES (:username, :passwordHash);
+INSERT INTO Account (Username, PasswordHash, DateCreated)
+    VALUES (:username, :passwordHash, :dateCreated);
 
-INSERT INTO Customer (FirstName, LastName, Email, RoutingNumber, AccountNumber, DateCreated, AccountID)
-    VALUES (:firstName, :lastName, :email, :routingNumber, :accountNumber, :dateCreated, :accountID);
+INSERT INTO Customer (FirstName, LastName, Email, RoutingNumber, AccountNumber, AccountID)
+    VALUES (:firstName, :lastName, :email, :routingNumber, :accountNumber, :accountID);
 
 /* updatePass($accountID, $passwordHash) */
 UPDATE      Account AS a
@@ -78,19 +94,35 @@ FROM        Token AS t
 WHERE       t.Selector = :selector;
 
 /******************************* TICKETS *******************************/
-/* getAllTickets($accountID) */
+/* getAccountTickets($accountID) */
 SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
 FROM        Ticket AS t
 WHERE       t.AccountID = :accountID
 ORDER BY    t.DateModified DESC;
 
-SELECT      t_m.TicketID, t_m.MessageText
+SELECT      t_m.TicketID, t_m.MessageSender, t_m.MessageText, t_m.MessageTime
 FROM        TicketMessage AS t_m
 WHERE       t_m.TicketID IN (
-    SELECT      t.TicketID
-    FROM        Ticket AS t
-    WHERE       t.AccountID = :accountID
-)
+                SELECT      t.TicketID
+                FROM        Ticket AS t
+                WHERE       t.AccountID = :accountID
+            )
+ORDER BY    t_m.TicketMessageID DESC;
+
+/* getAllTickets() */
+SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
+FROM        Ticket AS t
+ORDER BY    t.DateModified DESC
+LIMIT       500;
+
+SELECT      t_m.TicketID, t_m.MessageSender, t_m.MessageText, t_m.MessageTime
+FROM        TicketMessage AS t_m INNER JOIN (
+                SELECT      t.TicketID
+                FROM        Ticket AS t
+                ORDER BY    t.DateModified DESC
+                LIMIT       500
+            ) AS t
+                ON t_m.TicketID = t.TicketID
 ORDER BY    t_m.TicketMessageID DESC;
 
 /* uploadTicket($accountID, $subject, $messageText, $dateCreated, $dateModified) */

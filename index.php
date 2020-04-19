@@ -49,6 +49,11 @@
                 <span id="h-status" class="t-status">Status</span>
             </div>
             <div id="tickets"></div>
+            <div id="pagination">
+                <span class="page-arrow disabled" id="paginator-left"><</span>
+                <div id="pages"></div>
+                <span class="page-arrow" id="paginator-right">></span>
+            </div>
         </div>
         <div class="modal-container hidden" id="t-modal" data-modal="t-modal" data-listener="modalClose">
             <div class="modal-content pad-ctn-2">

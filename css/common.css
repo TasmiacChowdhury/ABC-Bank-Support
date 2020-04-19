@@ -1,11 +1,12 @@
 /********************* VARIABLES *********************/
 :root {
-    --theme-color: var(--blue-light);
+    --theme-color: var(--blue-light-2);
     --theme-image-panel: url("../images/panel-debit-card.jpg");
     --theme-image-wrapper: url("../images/buildings.jpg");
     --black-med: rgb(30, 30, 30);
+    --blue-light-1: rgb(0, 140, 225);
+    --blue-light-2: rgb(0, 115, 190);
     --blue-med: rgb(20, 90, 170);
-    --blue-light: rgb(0, 115, 190);
     --green-light: rgb(70, 190, 70);
     --green-med: rgb(10, 130, 10);
     --grey-light: rgb(200, 200, 200);
@@ -122,7 +123,7 @@ button {
 }
 
 button:hover {
-	background: var(--blue-light);
+	background: var(--blue-light-2);
 }
 
 .btn-hollow {
@@ -378,8 +379,8 @@ textarea {
 
 .submit:hover {
     border-radius: 3px;
-    background-color: var(--blue-light);
-    border-color: var(--blue-light);
+    background-color: var(--blue-light-2);
+    border-color: var(--blue-light-2);
     color: #fff;
 }
 
