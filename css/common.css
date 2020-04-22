@@ -57,17 +57,17 @@
 	background: rgba(0, 0, 0, 0.6);
 }
 
-::-webkit-scrollbar-track, ::-webkit-scrollbar-corner {
-	background: rgba(255, 255, 255, 0.6);
-}
-
 ::-webkit-scrollbar-thumb {
 	min-height: 28px;
-	background: rgba(70, 70, 70, 0.75);
+	background: rgba(150, 150, 150, 0.75);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: rgba(70, 70, 70, 0.9);
+	background: rgba(110, 110, 110, 0.9);
+}
+
+::-webkit-scrollbar-track, ::-webkit-scrollbar-corner {
+	background: rgba(255, 255, 255, 0.6);
 }
 
 /********************* GENERAL *********************/
@@ -156,6 +156,11 @@ button:hover {
 
 .hidden-panel {
     opacity: 0;
+}
+
+.disabled {
+    filter: contrast(0.6);
+    cursor: not-allowed !important;
 }
 
 .flex-end {
@@ -391,6 +396,7 @@ textarea {
 
 /********************* ALERT *********************/
 .al-text {
+    max-width: 500px;
     padding: 0.2rem;
     font-weight: 400;
     font-size: 1.15em;
@@ -573,7 +579,7 @@ button.close:hover {
     }
 
     .pad-ctn-2, .pad-ctn-3 {
-        padding: 1em;
+        padding: 1rem;
     }
 }
 

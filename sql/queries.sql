@@ -33,8 +33,8 @@ WHERE       e.AccountID = :accountID;
 /* getFullName($accountID, $type) */
 SELECT      c.FirstName, c.LastName
 FROM        Customer AS c
-WHERE       c.AccountID = :accountID;
-
+WHERE       c.AccountID = :accountID
+    UNION
 SELECT      e.FirstName, e.LastName
 FROM        Employee AS e
 WHERE       e.AccountID = :accountID;
@@ -94,6 +94,11 @@ FROM        Token AS t
 WHERE       t.Selector = :selector;
 
 /******************************* TICKETS *******************************/
+/* closeTicket($ticketID) */
+UPDATE      Ticket as t
+SET         t.TicketStatus = 'Closed', t.DateModified = :dateModified
+WHERE       t.TicketID = :ticketID;
+
 /* getAccountTickets($accountID) */
 SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
 FROM        Ticket AS t
@@ -107,7 +112,7 @@ WHERE       t_m.TicketID IN (
                 FROM        Ticket AS t
                 WHERE       t.AccountID = :accountID
             )
-ORDER BY    t_m.TicketMessageID DESC;
+ORDER BY    t_m.MessageTime DESC;
 
 /* getAllTickets() */
 SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
@@ -123,7 +128,15 @@ FROM        TicketMessage AS t_m INNER JOIN (
                 LIMIT       500
             ) AS t
                 ON t_m.TicketID = t.TicketID
-ORDER BY    t_m.TicketMessageID DESC;
+ORDER BY    t_m.MessageTime DESC;
+
+/* replyToTicket($accountID, $ticketID, $messageText, $date) */
+INSERT INTO TicketMessage (MessageSender, MessageText, MessageTime, TicketID)
+    VALUES (:messageSender, :messageText, :messageTime, :ticketID);
+
+UPDATE      Ticket as t
+SET         t.DateModified = :messageTime
+WHERE       t.TicketID = :ticketID;
 
 /* uploadTicket($accountID, $subject, $messageText, $dateCreated, $dateModified) */
 INSERT INTO Ticket (TicketSubject, DateCreated, DateModified, AccountID)

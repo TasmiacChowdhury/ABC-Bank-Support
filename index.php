@@ -58,7 +58,7 @@
         <div class="modal-container hidden" id="t-modal" data-modal="t-modal" data-listener="modalClose">
             <div class="modal-content pad-ctn-2">
                 <span class="close" id="close-t-modal" data-modal="t-modal" data-listener="modalClose">&times;</span>
-                <div id="t-messages"></div>
+                <div id="messages-outer"></div>
             </div>
         </div>
         <div class="modal-container hidden" id="nt-modal" data-modal="nt-modal" data-listener="modalClose">
@@ -78,13 +78,35 @@
                     <div class="row between">
                         <label for="file-upload" class="file-input-group">
                             <span class="file-input-name hidden" id="nt-file-name"></span>
-                            <span class="file-input-btn"><img src="images/Upload.png" class="file-input-icon"></span>
+                            <span class="file-input-btn disabled"><img src="images/Upload.png" class="file-input-icon"></span>
                         </label>
-                        <input type="file" class="file-input" name="files" id="file-upload" accept="image/png, image/jpeg, application/pdf" multiple>
-                        <span class="file-input-btn del" id="remove-upload"><img src="images/Delete.png" class="file-input-icon"></span>
+                        <input type="file" class="file-input" name="files" id="nt-file-upload" accept="image/png, image/jpeg, application/pdf" multiple>
+                        <span class="file-input-btn del disabled hidden" id="nt-remove-upload"><img src="images/Delete.png" class="file-input-icon"></span>
                         <input type="hidden" name="removeFiles" id="nt-f-remove" value="false">
                     </div>
                     <button type="submit" class="btn-hollow submit" id="nt-submit">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+        <div class="modal-container hidden" id="rt-modal" data-modal="rt-modal" data-listener="modalClose">
+            <div class="modal-content pad-ctn-2">
+                <span class="close" id="close-t-modal" data-modal="rt-modal" data-listener="modalClose">&times;</span>
+                <form id="rt-f" enctype="multipart/form-data">
+                    <div class="form-group no-rev">
+                        <label for="rt-f-messageText" class="lb-title">Message</label>
+                        <textarea name="messageText" id="rt-f-messageText" placeholder="Enter your message here..." maxlength="65535"></textarea>
+                        <label class="error-label invisible" id="rt-f-messageText-error">Error</label>
+                    </div>
+                    <div class="row between">
+                        <label for="file-upload" class="file-input-group">
+                            <span class="file-input-name hidden" id="rt-file-name"></span>
+                            <span class="file-input-btn disabled"><img src="images/Upload.png" class="file-input-icon"></span>
+                        </label>
+                        <input type="file" class="file-input" name="files" id="rt-file-upload" accept="image/png, image/jpeg, application/pdf" multiple>
+                        <span class="file-input-btn del disabled hidden" id="rt-remove-upload"><img src="images/Delete.png" class="file-input-icon"></span>
+                        <input type="hidden" name="removeFiles" id="rt-f-remove" value="false">
+                    </div>
+                    <button type="submit" class="btn-hollow submit" id="rt-submit">SUBMIT</button>
                 </form>
             </div>
         </div>

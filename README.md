@@ -3,6 +3,29 @@
 
 ---
 # Changelog
+## Version 0.50 &nbsp;-&nbsp; (2020-04-21)
+* **`index.php`** : Added modal for replying to tickets
+* **`index.php`** : Disabled and hid aspects of the file-upload system as they may not be included in the prototype due to low priority
+* **`login.php`** : Updated panel structuring to support addition of 'call-in' element
+* **`css\home.css`** : Added support for 'message buttons' (in-line buttons for replying to and closing tickets)
+* **`css\home.css`** : Fixes for modal scrolling and mobile responsiveness
+* **`css\login.css`** : Updated panel structuring to support addition of 'call-in' element
+* **`js\home.js`** : Updated `modalClose(...)` to support passing a modal's ID as a parameter for targeting
+* **`js\home.js`** : Updated `modalOpenTicket(...)`
+    * Added in-line buttons for replying to and closing to tickets
+    * Added alert for ticket closure confirmation
+    * Updated HTML structure to account for absolutely positioned in-line buttons
+* **`js\home.js`** : Added `modalReplyTicket(...)` to support new 'Reply' button in `modalOpenTicket(...)`
+* **`js\home.js`** : Added `closeTicket(...)` to mark tickets as closed
+* **`js\home.js`** : Added `replyToTicket()` for Customers or Employees to respond to tickets
+* **`js\modules\common.js`** : Added `createAlert(...)` to create temporary modals with content passed as paramaters
+* **`php\restricted\db-functions.php`** : Added `closeTicket(...)` to mark a ticket as 'Closed'
+* **`php\restricted\db-functions.php`** : Added `replyToTicket(...)` to add a new `TicketMessage` row and update the `DateModified` field of the corresponding row in `Ticket`
+* **`php\restricted\db-functions.php`** : Updated `getFullName(...)` to remove the need for the `$type` paramter in favor of a single `UNION` query
+* **`php\restricted\db-functions.php`** : Updated `getAccountTickets(...)` to use the previously added `MessageTime` field for the `ORDER BY` clauses instead of the `TicketMessageID` field to prevent potential unexpected behavior
+* Added `php\reply-ticket.php` and `php\close-ticket.php` to reply to tickets and mark them as closed
+
+
 ## Version 0.40 &nbsp;-&nbsp; (2020-04-18)
 * **`index.php`** : Added markup for pagination
 * **`css\home.css`** : Added selectors for pagination
@@ -35,9 +58,9 @@
 * **`js\home.js`** : Added `getTickets()` to support `createTickets(...)`
 * **`js\home.js`** : Added `ticketsEmpty(...)` to check if the global `IdxGlobals.tickets` attribute is empty for miscellaneous support functions
 * **`js\home.js`** : Added `uploadTicket()` to upload new tickets and create the elements for them in the Tickets table
-* **`js\common.js`** : Added `printDate(...)` for pretty-printing SQL DateTime strings
-* **`js\common.js`** : Added `leadZeros(...)` to maintain a consistent formatting for ticket IDs in the Tickets table
-* **`js\common.js`** : Updated `isValid(...)` to support new `messageText` element and correct artifacts from migration of existing files
+* **`js\modules\common.js`** : Added `printDate(...)` for pretty-printing SQL DateTime strings
+* **`js\modules\common.js`** : Added `leadZeros(...)` to maintain a consistent formatting for ticket IDs in the Tickets table
+* **`js\modules\common.js`** : Updated `isValid(...)` to support new `messageText` element and correct artifacts from migration of existing files
 * **`php\login.php`** : Updated successful login to create either `cid` or `eid` session variable for reference to CustomerID and EmployeeID, respectively, depending on the `acctype` session variable
 * **`php\restricted\db-functions.php`** : Added `getCustomerID(...)`, `getEmployeeID(...)`, `getFullName(...)`, `getAllTickets(...)`, and `uploadTicket(...)` functions
 * **`.gitignore`**: Removed `sql/` entry to reveal database setup file and queries used in `php\db-functions.php`

@@ -42,21 +42,15 @@ function getEmployeeID($accountID) {
     return empty($result) ? false : $result[0]["EmployeeID"];
 }
 
-function getFullName($accountID, $type) {
+function getFullName($accountID) {
     GLOBAL $conn;
-    if ($type == "customer") {
-        $query = "SELECT      c.FirstName, c.LastName
-                  FROM        Customer AS c
-                  WHERE       c.AccountID = :accountID;";
-    } else if ($type == "employee") {
-        $query = "SELECT      e.FirstName, e.LastName
-                  FROM        Employee AS e
-                  WHERE       e.AccountID = :accountID;";
-    } else {
-       logToFile("'Type' argument not supplied for function 'getFullName(\$accountID, \$type)'", "error");
-       return false;
-    }
-
+    $query = "SELECT      c.FirstName, c.LastName
+              FROM        Customer AS c
+              WHERE       c.AccountID = :accountID
+                  UNION
+              SELECT      e.FirstName, e.LastName
+              FROM        Employee AS e
+              WHERE       e.AccountID = :accountID;";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(":accountID", $accountID);
     $stmt->execute();
@@ -242,6 +236,21 @@ function validateToken($token) {
 }
 
 /******************************* TICKETS *******************************/
+function closeTicket($ticketID, $dateModified = null) {
+    GLOBAL $conn;
+    if (is_null($dateModified)) { $dateModified = date("Y-m-d H:i:s"); }
+
+    $query = "UPDATE      Ticket as t
+              SET         t.TicketStatus = 'Closed', t.DateModified = :dateModified
+              WHERE       t.TicketID = :ticketID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":ticketID", $ticketID);
+    $stmt->bindParam(":dateModified", $dateModified);
+    $stmt->execute();
+
+    return $dateModified;
+}
+
 function getAccountTickets($accountID) {
     GLOBAL $conn;
     $query = "SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
@@ -262,7 +271,7 @@ function getAccountTickets($accountID) {
                       FROM        Ticket AS t
                       WHERE       t.AccountID = :accountID
                   )
-                  ORDER BY    t_m.TicketMessageID DESC;";
+                  ORDER BY    t_m.MessageTime DESC;";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(":accountID", $accountID);
         $stmt->execute();
@@ -295,7 +304,7 @@ function getAllTickets() {
                                   LIMIT       500
                               ) AS t
                                   ON t_m.TicketID = t.TicketID
-                  ORDER BY    t_m.TicketMessageID DESC;";
+                  ORDER BY    t_m.MessageTime DESC;";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(":accountID", $accountID);
         $stmt->execute();
@@ -307,6 +316,36 @@ function getAllTickets() {
     }
 
     return empty($tickets) ? [] : $tickets;
+}
+
+function replyToTicket($accountID, $ticketID, $messageText, $messageTime = null) {
+    GLOBAL $conn;
+    if (is_null($messageTime)) { $messageTime = date("Y-m-d H:i:s"); }
+
+    $messageSender = getFullName($accountID);
+
+    $conn->beginTransaction();
+
+    $query = "INSERT INTO TicketMessage (MessageSender, MessageText, MessageTime, TicketID)
+                VALUES (:messageSender, :messageText, :messageTime, :ticketID);";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":messageSender", $messageSender);
+    $stmt->bindParam(":messageText", $messageText);
+    $stmt->bindParam(":messageTime", $messageTime);
+    $stmt->bindParam(":ticketID", $ticketID);
+    $stmt->execute();
+
+    $query = "UPDATE      Ticket as t
+              SET         t.DateModified = :messageTime
+              WHERE       t.TicketID = :ticketID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":messageTime", $messageTime);
+    $stmt->bindParam(":ticketID", $ticketID);
+    $stmt->execute();
+
+    $conn->commit();
+
+    return ["DateModified" => $messageTime, "Message" => ["TicketID" => $ticketID, "MessageSender" => $messageSender, "MessageText" => $messageText, "MessageTime" => $messageTime]];
 }
 
 function uploadTicket($accountID, $ticketSubject, $messageText, $dateCreated = null, $dateModified = null) {
@@ -326,7 +365,7 @@ function uploadTicket($accountID, $ticketSubject, $messageText, $dateCreated = n
     $stmt->execute();
 
     $ticketID = $conn->lastInsertId();
-    $messageSender = getFullName($accountID, "customer");
+    $messageSender = getFullName($accountID);
 
     $query = "INSERT INTO TicketMessage (MessageSender, MessageText, MessageTime, TicketID)
                   VALUES (:messageSender, :messageText, :dateCreated, :ticketID);";

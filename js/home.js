@@ -38,6 +38,10 @@ const eventListeners = [
             paginate(Idx.curPage + 1);
         }
     }, {
+        "id": "rt-f",
+        "eventType": "submit",
+        "function": replyToTicket
+    }, {
         "id": "sidemenu",
         "eventType": "click",
         "function": toggleMenu
@@ -162,10 +166,10 @@ async function modalAccount() {
 	modal.classList.remove("hidden");
 }
 
-function modalClose(del = false) {
+function modalClose(del = false, modalID = null) {
     event.stopPropagation();
-	var modal = document.getElementById(event.target.dataset.modal);
-	if (event.target == modal|| event.target.classList.contains("close")) { del ? modal.remove() : modal.classList.add("hidden"); }
+	var modal = document.getElementById(modalID || event.target.dataset.modal);
+	if ((modalID && modal) || event.target == modal || event.target.classList.contains("close")) { del ? modal.remove() : modal.classList.add("hidden"); }
 }
 
 function modalNewTicket() {
@@ -179,20 +183,80 @@ function modalNewTicket() {
 }
 
 function modalOpenTicket(ticket) {
-    var [modal, container] = document.querySelectorAll("#t-modal, #t-messages"),
+    var [modal, outerContainer] = document.querySelectorAll("#t-modal, #messages-outer"),
         docFrag = document.createDocumentFragment();
 
-    Object.keys(ticket.Messages).forEach(i => docFrag.appendChild(createTicketMessage(ticket.Messages[i])));
+    outerContainer.innerHTML = `<h2 class="message-subject">${ticket.TicketSubject}</h2>
+                                <div class="message-buttons">
+                                    <span class="message-button${ticket.TicketStatus == "Closed" ? " disabled" : ""}" id="close-ticket">Close</span>
+                                    <span class="message-button${ticket.TicketStatus == "Closed" ? " disabled" : ""}" id="reply-ticket">Reply</span>
+                                </div>
+                                <div id="messages-inner"></div>`;
 
-    container.innerHTML = "";
-    container.insertAdjacentHTML("afterbegin", `<h2 class="message-subject">${ticket.TicketSubject}</h2>`);
-    container.appendChild(docFrag);
+    let alertOptions = {
+        text: "Are you sure you want to mark this ticket as closed? You will not be able to make further updates.",
+        buttons: [{
+            btnText: "Confirm",
+            fn: () => {
+                closeTicket(ticket.TicketID);
+                modalClose(true, event.target.dataset.modal);
+                modalClose(false, "t-modal");
+            }}, {
+            btnText: "Cancel",
+            fn: () => modalClose(true),
+            class: "close"
+        }]
+    };
+
+    if (ticket.TicketStatus == "Open") {
+        document.getElementById("close-ticket").addEventListener("click", () => document.body.appendChild(Cmn.createAlert(alertOptions)));
+        document.getElementById("reply-ticket").addEventListener("click", () => modalReplyTicket(ticket.TicketID));
+    }
+
+    ticket.Messages.forEach(i => docFrag.appendChild(createTicketMessage(i)));
+    let innerContainer = document.getElementById("messages-inner");
+    innerContainer.appendChild(docFrag);
 
     closeMenus();
     modal.classList.remove("hidden");
 }
 
+function modalReplyTicket(ticketID) {
+    let replyModal = document.getElementById("rt-modal"),
+        replyForm = document.getElementById("rt-f");
+    replyForm.reset();
+    replyForm.dataset.ticketID = ticketID;
+    replyModal.classList.remove("hidden");
+}
+
 /******************************* TICKETS *******************************/
+async function closeTicket(ticketID) {
+    let formData = new FormData();
+    formData.append("ticketID", ticketID);
+
+    let response = await (await fetch("/php/close-ticket.php", {method: "POST", body: formData})).json();
+    if (response.Success) {
+        let ticket = Idx.tickets[Idx.tickets.findIndex(({TicketID}) => TicketID == ticketID)],
+            ticketElement = document.getElementById(`t${ticketID}`),
+            status = ticketElement.lastElementChild,
+            dateModified = status.previousElementSibling;
+
+        ticket.status = "Closed";
+        ticket.DateModified = response.DateModified;
+
+        status.classList.remove("open");
+        status.innerHTML = "Closed";
+
+        dateModified.title = `Date Modified: ${response.DateModified}`;
+        dateModified.innerHTML = Cmn.printDate(response.DateModified);
+
+        Cmn.toast(`Ticket #${ticketID} closed`, "success");
+    } else {
+        Cmn.toast(`Failed to close ticket #${ticketID}`, "error");
+    }
+    return response.Success;
+}
+
 function createTicketMessage(message) {
     let html = `<div class="message">
                     <h3 class="message-sender">${message.MessageSender}</h3>
@@ -225,6 +289,7 @@ function createTickets(container, tickets) {
 async function getTickets() {
     let response = await (await fetch("/php/get-tickets.php")).json();
     if (!response.Success) { Cmn.toast("Error getting tickets", "error"); }
+    response.Tickets.forEach(e => e.Messages = [...Object.values(e.Messages)]);
     return response.Tickets;
 }
 
@@ -249,6 +314,27 @@ async function uploadTicket() {
         Idx.tickets.push(response.Ticket);
         Idx.ticketsContainer.prepend(createTicket(response.Ticket));
         Cmn.toast("Ticket created", "success");
+    } else {
+        Cmn.toast(response.Message, "error");
+    }
+}
+
+async function replyToTicket() {
+    event.preventDefault();
+    if (!Cmn.checkErrors([...this.elements])) { return Cmn.toast("Errors in form fields", "error"); }
+
+    let ticketID = this.dataset.ticketID,
+        ticket = Idx.tickets[Idx.tickets.findIndex(({TicketID}) => TicketID == ticketID)],
+        formData = new FormData(this);
+    formData.append("ticketID", ticketID);
+    let response = await (await fetch("/php/reply-ticket.php", {method: "POST", body: formData})).json();
+    if (response.Success) {
+        ticket.DateModified = response.DateModified;
+        ticket.Messages.push(response.Message);
+
+        document.getElementById("messages-inner").prepend(createTicketMessage(response.Message));
+
+        Cmn.toast(`Ticket #${ticketID} updated`, "success");
     } else {
         Cmn.toast(response.Message, "error");
     }

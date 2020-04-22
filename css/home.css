@@ -126,13 +126,15 @@ nav {
     align-items: center;
     width: fit-content;
     height: fit-content;
+    min-width: 450px;
     max-width: 800px;
-    max-height: 98vh;
+    max-height: 90vh;
     margin: 1em auto;
-    background-color: #fff;
     border: 3px solid;
+    background-color: #fff;
     border-image: linear-gradient(135deg, var(--blue-light-2) 0%, rgb(90, 15, 90) 100%) 1;
     box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.6);
+    overflow-y: auto;
 	animation: animateZoom 0.6s;
 }
 
@@ -227,6 +229,10 @@ span.close:hover {
     align-items: flex-start;
 }
 
+#messages-outer, #messages-inner {
+    width: 100%;
+}
+
 .message {
     padding: 0.5em 0;
     width: 100%;
@@ -245,6 +251,32 @@ span.close:hover {
 
 .message-text {
     white-space: pre-wrap;
+}
+
+.message-buttons {
+    position: absolute;
+    display: flex;
+    right: 2rem;
+    padding-top: 0.5rem;
+}
+
+.message-button {
+    padding: 0.25em;
+    border: 1px solid var(--blue-light-2);
+    border-radius: 3px;
+    background-color: var(--blue-light-2);
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s all ease-in-out;
+}
+
+.message-button:not(:last-of-type) {
+    margin-right: 0.5rem;
+}
+
+.message-button:hover {
+    background-color: var(--blue-light-1);
+    border-color: var(--blue-light-1);
 }
 
 /********************* FORM *********************/
@@ -284,6 +316,7 @@ span.close:hover {
 	background: none;
     color: #000;
     white-space: nowrap;
+    user-select: none;
     transition: 0.2s all;
 }
 
@@ -406,23 +439,23 @@ span.close:hover {
     user-select: none;
 }
 
-.page-arrow.disabled {
-    filter: contrast(0.6);
-    cursor: not-allowed;
-}
-
 .page-num.active {
     background-color: var(--blue-light-1);
 }
 
 /********************* MOBILE *********************/
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 750px), screen and (max-height: 500px) {
     .modal-content {
+        min-width: 300px;
         max-width: 485px;
     }
 
     #create-ticket::after, #sidemenu::before {
         content: "";
+    }
+
+    .message-buttons {
+        right: 1rem;
     }
 }
 
