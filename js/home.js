@@ -313,7 +313,7 @@ async function uploadTicket() {
         if (Idx.tickets.length < 1) { Idx.ticketsContainer.classList.remove("empty"); }
         Idx.tickets.push(response.Ticket);
         Idx.ticketsContainer.prepend(createTicket(response.Ticket));
-        Cmn.toast("Ticket created", "success");
+        Cmn.toast(`Ticket #${response.Ticket.TicketID} created. Please wait for a response`, "success");
     } else {
         Cmn.toast(response.Message, "error");
     }

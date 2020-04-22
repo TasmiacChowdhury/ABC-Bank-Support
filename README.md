@@ -3,6 +3,10 @@
 
 ---
 # Changelog
+## Version 0.51 &nbsp;-&nbsp; (2020-04-22)
+* **`js\home.js`** : Updated toast notification in `uploadTicket()` to show Ticket ID number and instruct to wait for a response
+* **`images\`** : Updated favicon from OneMark placeholder to simple 'A' logo
+
 ## Version 0.50 &nbsp;-&nbsp; (2020-04-21)
 * **`index.php`** : Added modal for replying to tickets
 * **`index.php`** : Disabled and hid aspects of the file-upload system as they may not be included in the prototype due to low priority
@@ -24,7 +28,6 @@
 * **`php\restricted\db-functions.php`** : Updated `getFullName(...)` to remove the need for the `$type` paramter in favor of a single `UNION` query
 * **`php\restricted\db-functions.php`** : Updated `getAccountTickets(...)` to use the previously added `MessageTime` field for the `ORDER BY` clauses instead of the `TicketMessageID` field to prevent potential unexpected behavior
 * Added `php\reply-ticket.php` and `php\close-ticket.php` to reply to tickets and mark them as closed
-
 
 ## Version 0.40 &nbsp;-&nbsp; (2020-04-18)
 * **`index.php`** : Added markup for pagination
