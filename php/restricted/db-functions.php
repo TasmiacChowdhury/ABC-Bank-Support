@@ -289,7 +289,7 @@ function getAllTickets() {
     GLOBAL $conn;
     $query = "SELECT      t.TicketID, t.TicketSubject, t.DateCreated, t.DateModified, t.TicketStatus
               FROM        Ticket AS t
-              ORDER BY    t.DateModified DESC
+              ORDER BY    t.TicketStatus DESC, t.DateModified DESC
               LIMIT       500;";
     $stmt = $conn->prepare($query);
     $stmt->execute();

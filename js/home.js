@@ -97,10 +97,8 @@ window.addEventListener("DOMContentLoaded", async function() {
     Idx.pageLeft = document.getElementById("paginator-left");
     Idx.pageRight = document.getElementById("paginator-right");
 
-    if (!ticketsEmpty(Idx.tickets)) {
-        Idx.totalPages = Math.ceil(Idx.tickets.length / Idx.ticketsPerPage);
-        initializePagination();
-    }
+    if (!ticketsEmpty(Idx.tickets)) { Idx.totalPages = Math.ceil(Idx.tickets.length / Idx.ticketsPerPage); }
+    initializePagination();
 
     Cmn.addListeners(eventListeners);
 });
