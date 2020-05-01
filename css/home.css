@@ -280,7 +280,7 @@ span.close:hover {
 }
 
 /********************* FORM *********************/
-.message-text {
+.textarea {
     min-width: 20em;
     min-height: 10em;
 }
