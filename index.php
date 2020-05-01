@@ -72,7 +72,7 @@
                     </div>
                     <div class="form-group no-rev">
                         <label for="nt-f-messageText" class="lb-title">Message</label>
-                        <textarea name="messageText" id="nt-f-messageText" placeholder="Enter your message here..." maxlength="65535" required></textarea>
+                        <textarea name="messageText" class="message-text" id="nt-f-messageText" placeholder="Enter your message here..." maxlength="65535" required></textarea>
                         <label class="error-label invisible" id="nt-f-messageText-error">Error</label>
                     </div>
                     <div class="row between">
@@ -94,7 +94,7 @@
                 <form id="rt-f" enctype="multipart/form-data">
                     <div class="form-group no-rev">
                         <label for="rt-f-messageText" class="lb-title">Message</label>
-                        <textarea name="messageText" id="rt-f-messageText" placeholder="Enter your message here..." maxlength="65535"></textarea>
+                        <textarea name="messageText" class="message-text" id="rt-f-messageText" placeholder="Enter your message here..." maxlength="65535"></textarea>
                         <label class="error-label invisible" id="rt-f-messageText-error">Error</label>
                     </div>
                     <div class="row between">

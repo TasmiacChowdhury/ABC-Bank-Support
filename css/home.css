@@ -280,7 +280,7 @@ span.close:hover {
 }
 
 /********************* FORM *********************/
-#nt-f-messageText {
+.message-text {
     min-width: 20em;
     min-height: 10em;
 }
