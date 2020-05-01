@@ -207,7 +207,7 @@ function modalOpenTicket(ticket) {
     };
 
     if (ticket.TicketStatus == "Open") {
-        document.getElementById("close-ticket").addEventListener("click", () => document.body.appendChild(Cmn.createAlert(alertOptions)));
+        document.getElementById("close-ticket").addEventListener("click", () => document.body.appendChild(createAlert(alertOptions)));
         document.getElementById("reply-ticket").addEventListener("click", () => modalReplyTicket(ticket.TicketID));
     }
 
@@ -225,6 +225,27 @@ function modalReplyTicket(ticketID) {
     replyForm.reset();
     replyForm.dataset.ticketID = ticketID;
     replyModal.classList.remove("hidden");
+}
+
+
+/******************************* ALERTS *******************************/
+function createAlert({text = "", buttons = [{"btnText": "Close", "fn": () => modalClose(true), "class": "close"}]} = {}) {
+    event.stopPropagation();
+    var htmlButtons = "",
+        randID = Math.floor(Math.random() * 100);
+    buttons.forEach(e => htmlButtons += `<button class="${e.class || ""}" data-modal="al-${randID}">${e.btnText}</button>`);
+    var htmlModal = `<div class="modal-container" id="al-${randID}" data-modal="al-${randID}">
+                        <div class="modal-content pad-ctn-1">
+                            <p class="al-text">${text}</p>
+                            <div class="row">${htmlButtons}</div>
+                        </div>
+                    </div>`;
+    var frag = document.createRange().createContextualFragment(htmlModal);
+    frag.querySelectorAll("button").forEach((e, i) => e.addEventListener("click", buttons[i].fn));
+    frag.getElementById(`al-${randID}`).addEventListener("click", () => modalClose(true));
+
+    closeMenus();
+    return frag;
 }
 
 /******************************* TICKETS *******************************/

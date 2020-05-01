@@ -3,6 +3,13 @@
 
 ---
 # Changelog
+## Version 0.53 &nbsp;-&nbsp; (2020-04-30)
+* **`js\home.js`** : Fixed bug with `closeMenus()`
+
+## Version 0.52 &nbsp;-&nbsp; (2020-04-29)
+* **`js\home.js`** : Fixed bug with pagination when there are no tickets to display
+* **`php\restricted\db-functions.php`** : Changed sort order in `getAllTickets()` to sort by status first, then date modified so that employees can see highest priority tickets
+
 ## Version 0.51 &nbsp;-&nbsp; (2020-04-22)
 * **`js\home.js`** : Updated toast notification in `uploadTicket()` to show Ticket ID number and instruct to wait for a response
 * **`images\`** : Updated favicon from OneMark placeholder to simple 'A' logo
