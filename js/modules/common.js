@@ -1,5 +1,5 @@
 const CmnGlobals = {
-    months: ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    months: ["", "Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."],
     toasts: []
 }
 
@@ -12,8 +12,8 @@ export function getRandomInt(min, max, cur) {
 export function printDate(dateTime, type = "date") {
     let [year, month, day, time] = [dateTime.substring(0, 4), dateTime.substring(5, 7), dateTime.substring(8, 10), dateTime.substring(11)];
     switch (type) {
-        case "date": return `${CmnGlobals.months[+month]}. ${day}, ${year}`;
-        case "dateTime": return `${CmnGlobals.months[+month]}. ${day}, ${year} | ${new Date(`1970-01-01T${time}`).toLocaleTimeString({}, {hour: "numeric", minute: "numeric"})}`;
+        case "date": return `${CmnGlobals.months[+month]} ${day}, ${year}`;
+        case "dateTime": return `${CmnGlobals.months[+month]} ${day}, ${year} | ${new Date(`1970-01-01T${time}`).toLocaleTimeString({}, {hour: "numeric", minute: "numeric"})}`;
         case "time": return new Date(`1970-01-01T${time}`).toLocaleTimeString({}, {hour: "numeric", minute: "numeric"});
     }
 }

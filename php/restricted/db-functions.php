@@ -105,7 +105,7 @@ function getUserInfo($accountID, $type) {
          FROM        Account AS a INNER JOIN Customer AS c
                          ON a.AccountID = c.AccountID
          WHERE       c.AccountID = :accountID;"
-    :   "SELECT      a.Username, e.FirstName, e.LastName
+    :   "SELECT      a.Username, e.FirstName, e.LastName, a.DateCreated
          FROM        Account AS a INNER JOIN Employee AS e
                          ON a.AccountID = e.AccountID
          WHERE       e.AccountID = :accountID;";
