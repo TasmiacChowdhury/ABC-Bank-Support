@@ -312,7 +312,8 @@ async function getTickets() {
         response.Tickets.forEach(e => e.Messages = [...Object.values(e.Messages)]);
         return response.Tickets;
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        return [];
     }
 }
 
