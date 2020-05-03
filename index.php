@@ -52,7 +52,7 @@
             <div id="pagination">
                 <span class="page-arrow disabled" id="paginator-left"><</span>
                 <div id="pages"></div>
-                <span class="page-arrow" id="paginator-right">></span>
+                <span class="page-arrow disabled" id="paginator-right">></span>
             </div>
         </div>
         <div class="modal-container hidden" id="t-modal" data-modal="t-modal" data-listener="modalClose">

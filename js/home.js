@@ -374,6 +374,7 @@ function initializePagination() {
         Idx.pagesContainer.insertAdjacentHTML("beforeend", `<span class="page-num" data-page=${i} data-listener="paginate">${i}</span>`);
     }
     Idx.pagesContainer.firstChild.classList.add("active");
+    if (Idx.totalPages > 1) { Idx.pageRight.classList.remove("disabled"); }
     loadPage(Idx.curPage);
 }
 
