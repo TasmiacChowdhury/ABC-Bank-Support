@@ -307,7 +307,9 @@ function createTickets(container, tickets) {
 
 async function getTickets() {
     try {
-        let response = await (await fetch("/php/get-tickets.php")).json();
+        let response = await fetch("/php/get-tickets.php");
+        console.log(response);
+        response = await response.json();
         if (!response.Success) { Cmn.toast("Error getting tickets", "error"); }
         response.Tickets.forEach(e => e.Messages = [...Object.values(e.Messages)]);
         return response.Tickets;
