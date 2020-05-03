@@ -1,3 +1,1 @@
 Require all denied
-Require ip localhost:8000
-Require ip 127.0.0.1
