@@ -34,7 +34,7 @@ try {
             $_SESSION["accid"] = $accountID;
             $_SESSION["acctype"] = "c";
             $_SESSION["username"] = $username;
-            if (isset($_POST["remember-me"])) { setcookie("authToken", createToken($conn, $accountID, 30), time() + (86400 * 30), "", ""); } // , TRUE, TRUE);   --removed for local testing without https
+            if (isset($_POST["remember-me"])) { setcookie("authToken", createToken($accountID, 30), time() + (86400 * 30), "", ""); } // , TRUE, TRUE);   --removed for local testing without https
 
             echo json_encode(["Success" => true, "Message" => "Registration successful"]);
         }
