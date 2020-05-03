@@ -91,11 +91,11 @@ const Idx = {
 }
 
 window.addEventListener("DOMContentLoaded", async function() {
-    Idx.tickets = await getTickets();
     Idx.ticketsContainer = document.getElementById("tickets");
     Idx.pagesContainer = document.getElementById("pages");
     Idx.pageLeft = document.getElementById("paginator-left");
     Idx.pageRight = document.getElementById("paginator-right");
+    Idx.tickets = await getTickets();
 
     if (!ticketsEmpty(Idx.tickets)) { Idx.totalPages = Math.ceil(Idx.tickets.length / Idx.ticketsPerPage); }
     initializePagination();
@@ -306,10 +306,14 @@ function createTickets(container, tickets) {
 }
 
 async function getTickets() {
-    let response = await (await fetch("/php/get-tickets.php")).json();
-    if (!response.Success) { Cmn.toast("Error getting tickets", "error"); }
-    response.Tickets.forEach(e => e.Messages = [...Object.values(e.Messages)]);
-    return response.Tickets;
+    try {
+        let response = await (await fetch("/php/get-tickets.php")).json();
+        if (!response.Success) { Cmn.toast("Error getting tickets", "error"); }
+        response.Tickets.forEach(e => e.Messages = [...Object.values(e.Messages)]);
+        return response.Tickets;
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 function ticketsEmpty(tickets) {
