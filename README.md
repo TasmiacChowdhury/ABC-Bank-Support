@@ -1,6 +1,11 @@
 # ABC Bank's Customer Support System
 ### This [customer support system](https://abcbank-support.herokuapp.com) is a prototype system for ABC Bank, a fictional institution, created as part of a two-semester project for my CIS 4800 & 5800 courses.
 
+&nbsp;
+## Product Demo (Hosted on Youtube)
+[![Product Demo hosted on Youtube](images/product-demo-thumb.jpg)](https://youtu.be/ir8tpdI_2fM)
+
+&nbsp;
 ---
 # Changelog
 ## Version 0.53 &nbsp;-&nbsp; (2020-04-30)
